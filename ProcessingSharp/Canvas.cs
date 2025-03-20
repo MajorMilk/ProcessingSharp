@@ -10,7 +10,7 @@ namespace P5CSLIB;
 public class Canvas : GameWindow
 {
     //Just a list for now, maybe a dict in the future
-    private List<Shape> shapes = new List<Shape>();
+    public Dictionary<int, Shape> shapes = new(); //maps an int id to a shape as to maintain a reference to it for external use
     
     private Vector2i originalCanvasSize;
     
@@ -25,9 +25,9 @@ public class Canvas : GameWindow
         
     }
 
-    public void AddShape(Shape shape)
+    public void AddShape(int id, Shape shape)
     {
-        shapes.Add(shape);
+        if(!shapes.TryAdd(id, shape)) throw new Exception("Shape id already exists in shape dictionary");
     }
     
     
@@ -61,7 +61,7 @@ public class Canvas : GameWindow
 
         foreach (var shape in shapes)
         {
-            shape.Draw(scaleX, scaleY);
+            shape.Value.Draw(scaleX, scaleY);
         }
         OnDraw?.Invoke();
 

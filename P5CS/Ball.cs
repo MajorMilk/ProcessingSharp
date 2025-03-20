@@ -6,8 +6,8 @@ namespace P5CS;
 
 public class Ball : Circle
 {
-    public Vector2 Velocity { get; set; } = new(1000, 0);
-    private float Diameter { get; set; }
+    public Vector2 Velocity { get; set; } = new(PFuncs.Rand(0, 0), 0);
+    public float Diameter { get; set; }
     public Ball(float xPos, float yPos, float diameter) : base(xPos, yPos, diameter)
     {
         Diameter = diameter;
@@ -45,15 +45,22 @@ public class Ball : Circle
         }
     }
 
-    public void CheckCollision(Circle other)
+    public void CheckCollision(ref Ball other)
     {
-        
+        var a = Center();
+        var b = other.Center();
+        if (PFuncs.Dist(a, b) < (Diameter / 2f) + (other.Diameter / 2f))
+        {
+            Console.WriteLine($"Collision detected between Ball {this} and {other}"); // Debug
+            Velocity *= -0.9f;
+            other.Velocity *= -0.9f;
+        }
     }
 
     public void Update()
     {
         // Apply gravity
-        Velocity += new Vector2(0, -981f * Globals.DeltaTime);
+        Velocity += new Vector2(0, -98f * Globals.DeltaTime * 2);
         
         Move(Velocity);
         CheckCollisionWalls();

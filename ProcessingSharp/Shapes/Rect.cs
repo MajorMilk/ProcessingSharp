@@ -29,7 +29,10 @@ public class Rect : Shape
     public Vector2 TopRight => new(Position.X + Size.X, Position.Y);
     public Vector2 BottomLeft => new(Position.X, Position.Y + Size.Y);
     public Vector2 BottomRight => new(Position.X + Size.X, Position.Y + Size.Y);
-    //public Vector2 Center => Position - Size / 4;
+    public Vector2 Center() {
+        var tempSize = -Size / 4; // Dont worry about why it's negative and divided by 4.... it's a mess
+        return Position - tempSize;
+    }
     
 
     public Rect(float centerX, float centerY, float xDiameter, float yDiameter)

@@ -16,7 +16,7 @@ public static class Globals
     public static Vector2i CanvasSize = new(800,800);
     
     
-    public static float FrameRate = 60f; // Target frame rate
+    public static float FrameRate = 144f; // Target frame rate
     
     //Not implemented 
     public static int MaxShapes = 1000; 

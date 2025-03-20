@@ -12,7 +12,10 @@ public static class PFuncs
     public static float Abs(float x) => x < 0 ? -x : x;
     public static float Min(float x, float y) => x < y ? x : y;
     public static float Max(float x, float y) => x > y ? x : y;
+    
     public static float Lerp(float x, float y, float a) => x * (1 - a) + y * a;
+    public static Vector2 Lerp(Vector2 x, Vector2 y, float a) => x * (1 - a) + y * a;
+    
     public static float Rand(float a, float b) => a + ((b-a) * (float)Globals.RND.NextDouble());
     
     public static int Floor(float x) => (int)Math.Floor(x);
@@ -29,5 +32,6 @@ public static class PFuncs
     public static float Dist(float x1, float y1, float x2, float y2) => MathF.Sqrt(Sq(x1 - x2) + Sq(y1 - y2));
     public static float Dist(Vector2 a, Vector2 b) => Dist(a.X, a.Y, b.X, b.Y);
 
-    //ToDo: implement the rest lol
+    //Later:
+    //Perlin Noise 1,2 D
 }
