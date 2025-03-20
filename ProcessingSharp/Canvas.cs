@@ -13,11 +13,16 @@ public class Canvas : GameWindow
     private List<Shape> shapes = new List<Shape>();
     
     private Vector2i originalCanvasSize;
+    
+    public delegate void OnDrawDelegate();
+    public OnDrawDelegate OnDraw;
 
     public Canvas(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
     {
         originalCanvasSize = Globals.CanvasSize;
+        OnDraw = null;
+        
     }
 
     public void AddShape(Shape shape)
@@ -30,8 +35,7 @@ public class Canvas : GameWindow
     protected override void OnResize(ResizeEventArgs e)
     {
         Globals.CanvasSize = new Vector2i(e.Width, e.Height);
-        Globals.UpdateProjectionMatrix();
-        GL.Viewport(0, 0, e.Width, e.Height);
+        GL.Viewport(0, 0, Globals.CanvasSize.X, Globals.CanvasSize.Y);
         base.OnResize(e);
     }
 
@@ -39,31 +43,30 @@ public class Canvas : GameWindow
     {
         base.OnLoad();
         GL.Enable(EnableCap.Multisample);
+        GL.Disable(EnableCap.DepthTest);
         
         GL.ClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         GL.Viewport(0, 0, Globals.CanvasSize.X, Globals.CanvasSize.Y);
     }
-    private float time = 0;
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        
+        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         Globals.UpdateProjectionMatrix();
-        
-
-        GL.Clear(ClearBufferMask.ColorBufferBit);
+        Globals.DeltaTime = (float)args.Time;
 
 
-        float scaleX = Globals.CanvasSize.X / originalCanvasSize.X;
-        float scaleY = Globals.CanvasSize.Y / originalCanvasSize.Y;
+        float scaleX = 1;
+        float scaleY = 1;
 
         foreach (var shape in shapes)
         {
-            Vector2 offset = new((float)Math.Cos(time) *50, (float)Math.Sin(time) * 50);
-            time += 0.01f;
-            //shape.Move(offset);
             shape.Draw(scaleX, scaleY);
         }
+        OnDraw?.Invoke();
+
+        
+        
 
         SwapBuffers();
     }

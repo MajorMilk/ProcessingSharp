@@ -14,6 +14,8 @@ public class Line : Shape
     
     protected int shaderProgram;
 
+    public override float RotationAngle { get; set; }
+
     public Line(float x1, float y1, float x2, float y2)
     {
         Start = new(x1, y1);
@@ -27,6 +29,11 @@ public class Line : Shape
     public Line(Vector2 x1, Vector2 y1) : this(x1.X, x1.Y, y1.X, y1.Y)
     {
 
+    }
+
+    public override void Rotate(float angle,  bool rads = false)
+    {
+        throw new NotImplementedException();
     }
 
     public override void Draw(float scalex, float scaley)

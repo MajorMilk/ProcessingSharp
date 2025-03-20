@@ -9,4 +9,8 @@ public abstract class Shape
     public abstract int StrokeWeight { get; set; }
     public abstract void Draw(float scalex, float scaley);
     public abstract void Move(Vector2 offset);
+    
+    
+    public abstract float RotationAngle { get; set; }
+    public abstract void Rotate(float angle,  bool rads = false);
 }

@@ -10,89 +10,67 @@ public static class ShaderHelper
         string vertexShaderSource = @"
             #version 330 core
             layout (location = 0) in vec2 aPos;
-            uniform vec2 offset;
+
             uniform mat4 projection;
+            uniform vec2 position; // Shape center
+            uniform vec2 canvasSize;
+
             void main()
             {
-                gl_Position = projection * vec4(aPos + offset, 0.0, 1.0);
+                vec2 worldPos = aPos;  // Apply transformation
+                gl_Position = projection * vec4(worldPos, 0.0, 1.0);
             }
         ";
 
         string fragmentShaderSource = @"
-             #version 330 core
-out vec4 FragColor;
+            #version 330 core
+        out vec4 FragColor;
 
-uniform vec4 fillColor;
-uniform vec4 strokeColor;
-uniform float strokeWidth;
-uniform bool toggleFill;
-uniform bool toggleStroke;
-uniform bool circleMode; // Enables circle rendering
-uniform vec2 position;  // Shape center
-uniform vec2 size;      // Shape size (width, height)
-uniform float canvasWidth; // Canvas width (for scaling stroke width)
+        uniform vec4 fillColor;
+        uniform vec4 strokeColor;
+        uniform float strokeWidth;
+        uniform bool toggleFill;
+        uniform bool toggleStroke;
+        uniform bool circleMode;
+        uniform vec2 size;  
+        uniform vec2 position;
 
-void main()
-{
-    // Normalize fragment position relative to the shape center
-    vec2 uv = (gl_FragCoord.xy - position) / (size * 0.5); // Convert to range -1 to 1
-
-    // Normalize stroke width in NDC space
-    float normalizedStrokeWidth = strokeWidth / size.x; // Normalize based on shape's width
-
-    if (circleMode)
-    {
-        float dist = length(uv); // Distance from center
-        if (dist > 1.0) discard; // Discard pixels outside the circle
-
-        // Calculate the stroke edge for circle
-        float edge = 1.0 + normalizedStrokeWidth;
-        bool isStroke = dist >= edge;
-
-        if (toggleFill && !isStroke)
+        void main()
         {
-            FragColor = fillColor;
-        }
-        else if (toggleStroke && isStroke)
-        {
-            FragColor = strokeColor;
-        }
-        else
-        {
-            discard;
-        }
-    }
-    else
-    {
-        // Rectangular rendering
-        float left = position.x - size.x / 2.0;
-        float right = position.x + size.x / 2.0;
-        float bottom = position.y - size.y / 2.0;
-        float top = position.y + size.y / 2.0;
+            // Normalize fragment position relative to the shape center
+            vec2 uv = (gl_FragCoord.xy - position) / (size * 0.5);
+            uv = uv * 2.0 - 1.0;
 
-        bool isInside = gl_FragCoord.x >= left && gl_FragCoord.x <= right && 
-                        gl_FragCoord.y >= bottom && gl_FragCoord.y <= top;
+            float normalizedStrokeWidth = strokeWidth;
 
-        // Check if the fragment is near the edge to render stroke
-        bool isNearEdge = (gl_FragCoord.x >= left - normalizedStrokeWidth && gl_FragCoord.x <= left + normalizedStrokeWidth) || 
-                          (gl_FragCoord.x >= right - normalizedStrokeWidth && gl_FragCoord.x <= right + normalizedStrokeWidth) ||
-                          (gl_FragCoord.y >= bottom - normalizedStrokeWidth && gl_FragCoord.y <= bottom + normalizedStrokeWidth) ||
-                          (gl_FragCoord.y >= top - normalizedStrokeWidth && gl_FragCoord.y <= top + normalizedStrokeWidth);
+            if (circleMode)
+            {
+                float dist = length(uv); // Distance from center
+                if (dist > 1.0) discard; // Outside the circle
 
-        if (toggleFill && isInside && !isNearEdge)
-        {
-            FragColor = fillColor;
+                float edge = 1.0 - normalizedStrokeWidth;
+                bool isStroke = dist >= edge;
+
+                if (toggleFill && !isStroke)
+                    FragColor = fillColor;
+                else if (toggleStroke && isStroke)
+                    FragColor = strokeColor;
+                else
+                    discard;
+            }
+            else
+            {
+                bool isInside = abs(uv.x) <= 1.0 && abs(uv.y) <= 1.0;
+                bool isStroke = abs(uv.x) >= (1.0 - normalizedStrokeWidth) || abs(uv.y) >= (1.0 - normalizedStrokeWidth);
+
+                if (toggleFill && isInside && !isStroke)
+                    FragColor = fillColor;
+                else if (toggleStroke && isStroke)
+                    FragColor = strokeColor;
+                else
+                    discard;
+            }
         }
-        else if (toggleStroke && isNearEdge)
-        {
-            FragColor = strokeColor;
-        }
-        else
-        {
-            discard;
-        }
-    }
-}
         ";
 
 

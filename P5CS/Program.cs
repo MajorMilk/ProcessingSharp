@@ -1,6 +1,7 @@
 ﻿using OpenTK.Windowing.Desktop;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using P5CS;
 using P5CSLIB;
 using P5CSLIB.Shapes;
 
@@ -21,14 +22,17 @@ class Program
         };
 
         using var canvas = new Canvas(gameWindowSettings, nativeWindowSettings);
-        for (int i = 50; i < 800; i += 50)
-        {
-            var shape = new Rect(new Vector2i(i, i), new Vector2i(10, 50));
-            shape.FillColor = new Vector4i(255, (int)((i/1600f)*255), (int)((i/800f)*255), 255);
-            shape.StrokeColor = new Vector4i((int)((i/1600f)*255), 255, (int)((i/800f)*255), 255);
-            canvas.AddShape(shape);
-        }
-        canvas.AddShape(new Ellipse(Globals.CanvasCenter, new Vector2i(100, 100)));
+        var ball = new Ball(Globals.CanvasCenter, 100);
+        canvas.AddShape(ball);
+        canvas.AddShape(new Circle(new(200,400), 50));
+        canvas.AddShape(new Circle(new(600,400), 50));
+        canvas.AddShape(new Circle(new(200,200), 50));
+        canvas.AddShape(new Circle(new(600,200), 50));
+        canvas.AddShape(new Circle(new(200,600), 50));
+        canvas.AddShape(new Circle(new(600,600), 50));
+        //canvas.OnDraw += () => ball.Update();
+        //canvas.AddShape(new Circle(Globals.CavasOffset(-10 * MathF.Sqrt(2)), 100));
+        
         canvas.Run();
     }
 }
