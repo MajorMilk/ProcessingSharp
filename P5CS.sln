@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P5CS", "P5CS\P5CS.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessingSharp", "ProcessingSharp\ProcessingSharp.csproj", "{33C5928F-1D6D-4D3F-B067-4B3EC9914588}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomBalls", "RandomBalls\RandomBalls.csproj", "{DD279D20-9294-404A-BD1D-77711C695938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{33C5928F-1D6D-4D3F-B067-4B3EC9914588}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33C5928F-1D6D-4D3F-B067-4B3EC9914588}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33C5928F-1D6D-4D3F-B067-4B3EC9914588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD279D20-9294-404A-BD1D-77711C695938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD279D20-9294-404A-BD1D-77711C695938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD279D20-9294-404A-BD1D-77711C695938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD279D20-9294-404A-BD1D-77711C695938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

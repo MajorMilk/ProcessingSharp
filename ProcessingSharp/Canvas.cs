@@ -15,7 +15,7 @@ public class Canvas : GameWindow
     private Vector2i originalCanvasSize;
     
     public delegate void OnDrawDelegate();
-    public OnDrawDelegate OnDraw;
+    public event OnDrawDelegate OnDraw;
 
     public Canvas(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
         : base(gameWindowSettings, nativeWindowSettings)
@@ -39,35 +39,40 @@ public class Canvas : GameWindow
         base.OnResize(e);
     }
 
+
     protected override void OnLoad()
     {
         base.OnLoad();
         GL.Enable(EnableCap.Multisample);
         GL.Disable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
+
+
+        var color = Globals.NormalizedBackgroundColor;
         
-        GL.ClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+        GL.ClearColor(color.X, color.Y, color.Z, color.W);
         GL.Viewport(0, 0, Globals.CanvasSize.X, Globals.CanvasSize.Y);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GL.Clear(ClearBufferMask.DepthBufferBit);
+        if (!Globals.FrameSmearMode)
+            GL.Clear(ClearBufferMask.ColorBufferBit); //Uncomment this line to remove color blending
         Globals.UpdateProjectionMatrix();
         Globals.DeltaTime = (float)args.Time;
+        
+        float scaleX = 1f;
+        float scaleY = 1f;
+        
 
-
-        float scaleX = 1;
-        float scaleY = 1;
-
-        foreach (var shape in shapes)
+        foreach (var shape in shapes) // I get errors when trying to parallelize this
         {
             shape.Value.Draw(scaleX, scaleY);
         }
-        OnDraw?.Invoke();
-
+        Parallel.ForEach(OnDraw.GetInvocationList(), d => d.DynamicInvoke()); 
         
-        
-
         SwapBuffers();
     }
 

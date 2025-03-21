@@ -34,7 +34,7 @@ public class Rect : Shape
         return Position - tempSize;
     }
     
-
+    private float[] verticies = new float[8];
     public Rect(float centerX, float centerY, float xDiameter, float yDiameter)
     {
         Position = new Vector2(centerX, centerY);
@@ -43,12 +43,21 @@ public class Rect : Shape
         FillColor = Globals.FillColor;
         StrokeColor = Globals.StrokeColor;
         StrokeWeight = Globals.StrokeWeight;
-        float[] vertices = {
-            centerX - xDiameter, centerY - yDiameter, // Bottom-left
-            centerX + xDiameter, centerY - yDiameter, // Bottom-right
-            centerX + xDiameter, centerY + yDiameter, // Top-right
-            centerX - xDiameter, centerY + yDiameter  // Top-left
-        };
+        
+        verticies[0] = centerX - xDiameter;
+        verticies[1] = centerY - yDiameter;
+        verticies[2] = centerX + xDiameter;
+        verticies[3] = centerY - yDiameter;
+        verticies[4] = centerX + xDiameter;
+        verticies[5] = centerY + yDiameter;
+        verticies[6] = centerX - xDiameter;
+        verticies[7] = centerY + yDiameter;
+        // float[] vertices = {
+        //     centerX - xDiameter, centerY - yDiameter, // Bottom-left
+        //     centerX + xDiameter, centerY - yDiameter, // Bottom-right
+        //     centerX + xDiameter, centerY + yDiameter, // Top-right
+        //     centerX - xDiameter, centerY + yDiameter  // Top-left
+        // };
 
         uint[] indices = { 0, 1, 2, 2, 3, 0 };
 
@@ -57,7 +66,7 @@ public class Rect : Shape
 
         vbo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsage.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer, verticies.Length * sizeof(float), verticies, BufferUsage.StaticDraw);
 
         ebo = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);

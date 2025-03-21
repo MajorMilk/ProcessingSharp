@@ -16,7 +16,8 @@ public class Ellipse : Rect
     }
 
     
-
+    private Vector2[] localVertices = new Vector2[4];
+    float[] rotatedVertices = new float[8];
     public override void Draw(float scalex, float scaley)
     {
         GL.UseProgram(shaderProgram);
@@ -49,16 +50,13 @@ public class Ellipse : Rect
         float cosTheta = MathF.Cos(radians);
         float sinTheta = MathF.Sin(radians);
 
-        // Define the original rectangle corners relative to center
-        Vector2[] localVertices = new Vector2[]
-        {
-            new Vector2(-xDiameter, -yDiameter), // Bottom-left
-            new Vector2(xDiameter, -yDiameter),  // Bottom-right
-            new Vector2(xDiameter, yDiameter),   // Top-right
-            new Vector2(-xDiameter, yDiameter)   // Top-left
-        };
+        localVertices[0] = new Vector2(-xDiameter, -yDiameter);
+        localVertices[1] = new Vector2(xDiameter, -yDiameter);
+        localVertices[2] = new Vector2(xDiameter, yDiameter);
+        localVertices[3] = new Vector2(-xDiameter, yDiameter);
+        
 
-        float[] rotatedVertices = new float[8];
+        
 
         // Apply rotation transformation
         for (int i = 0; i < localVertices.Length; i++)

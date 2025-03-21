@@ -31,6 +31,17 @@ public static class PFuncs
     
     public static float Dist(float x1, float y1, float x2, float y2) => MathF.Sqrt(Sq(x1 - x2) + Sq(y1 - y2));
     public static float Dist(Vector2 a, Vector2 b) => Dist(a.X, a.Y, b.X, b.Y);
+    
+    public static float GetHeading(Vector2 center, Vector2 point)
+    {
+        Vector2 direction = point - center;
+        float angleInRadians = MathF.Atan2(direction.Y, direction.X);
+
+        return angleInRadians;
+    }
+    
+    public static float VLength(Vector2 v) => (float) Math.Sqrt(v.X * v.X + v.Y * v.Y);
+
 
     //Later:
     //Perlin Noise 1,2 D

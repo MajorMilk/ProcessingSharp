@@ -8,68 +8,40 @@ using P5CSLIB.Shapes;
 using static P5CSLIB.PFuncs;
 class Program
 {
-    static void CheckBalls(Dictionary<int, Ball> balls, Canvas canvas)
-{
-    Parallel.ForEach(balls, pairA =>
+    static Vector2 SimpleFlowField(Vector2 point)
     {
-        foreach (var pairB in balls)
-        {
-            // Process each unique pair only once
-            if (pairA.Key >= pairB.Key) continue;
+        
+        float x = point.X ;
+        float y = point.Y ;
+        
+        float cx = point.X - Globals.CanvasCenter.X;
+        float cy = point.Y - Globals.CanvasCenter.Y;
+        float wStretch = x + y *Abs(GetHeading(Globals.CanvasCenter, point));
 
-            Ball a = canvas.shapes[pairA.Key] as Ball;
-            Ball b = canvas.shapes[pairB.Key] as Ball;
+        // Noise angle calculation
+        Vector2 noiseVector = point.Normalized() - Globals.CanvasCenter;
+        float noiseAngle = GetHeading(Globals.CanvasCenter, noiseVector);
 
-            Vector2 delta = b.Center() - a.Center();
-            float distance = delta.Length;
-            float minDistance = (a.Diameter / 2f) + (b.Diameter / 2f) - 10;
+        // Smooth radial attraction
+        Vector2 toCenter = point - Globals.CanvasCenter;
 
-            if (distance < minDistance && distance > 0) // Collision detected
-            {
-                // Unit normal vector (direction of collision)
-                Vector2 normal = delta / distance;
-
-                // Calculate the overlap distance
-                float overlap = minDistance - distance;
-
-                // Separate the balls by half the overlap distance to remove overlap
-                Vector2 correction = normal * overlap;
-
-                // Move balls away from each other
-                a.Move(-correction / 2);
-                b.Move(correction / 2);
-
-                // Apply elastic collision physics for velocity update
-                // Unit tangent vector (perpendicular to normal)
-                Vector2 tangent = new Vector2(-normal.Y, normal.X);
-
-                // Project the velocities onto the normal and tangent directions
-                float vAn = Vector2.Dot(a.Velocity, normal);
-                float vAt = Vector2.Dot(a.Velocity, tangent);
-                float vBn = Vector2.Dot(b.Velocity, normal);
-                float vBt = Vector2.Dot(b.Velocity, tangent);
-
-                // Swap the normal velocities for elastic collision
-                float vAnAfter = vBn;
-                float vBnAfter = vAn;
-
-                // Recombine the normal and tangential components of the velocities
-                Vector2 newVA = (vAnAfter * normal) + (vAt * tangent);
-                Vector2 newVB = (vBnAfter * normal) + (vBt * tangent);
-
-                a.Velocity = newVA;
-                b.Velocity = newVB;
-            }
-        }
-    });
-}
-
-
+        float distToCenter = VLength(toCenter);
+        float maxDist = (float)Math.Sqrt(cx * cx + cy * cy + wStretch * wStretch);
+        float wOffset = wStretch * Map(VLength(toCenter), 0, maxDist, 0.0001f, 1f);
+        float gravityStrength = Map(distToCenter, 0, maxDist + 500, 1000f, 0f);
+    
+        toCenter = toCenter.Normalized();
+        float ratio = Map(gravityStrength, 0, 1, 0, (float)Math.Sqrt(wOffset));
+        float finalAngle = Lerp(noiseAngle, GetHeading(Globals.CanvasCenter ,toCenter), 
+            (gravityStrength * gravityStrength) / (ratio / Sq(distToCenter) / ((ratio) /  (distToCenter))) / wOffset);
 
     
+        return new Vector2(MathF.Cos(finalAngle + MathF.PI/4), MathF.Sin(finalAngle + MathF.PI/4));
+    }
+
     static void Main()
     {
-        Dictionary<int, Ball> balls = [];
+        Globals.FrameSmearMode = true; // Enable frame smearing
         var gameWindowSettings = new GameWindowSettings()
         {
             UpdateFrequency = Globals.FrameRate,
@@ -81,17 +53,20 @@ class Program
             WindowBorder = WindowBorder.Fixed,
             WindowState = WindowState.Normal,
         };
+        var field = new FlowField2D(SimpleFlowField);
         int j = 0;
         using var canvas = new Canvas(gameWindowSettings, nativeWindowSettings);
-        for (int i = 25; i < 1800; i += 25)
+        for (int i = 1; i < 3000; i++)
         {
-            var b = new Ball(new Vector2(Rand(25, 725), Rand(100, 750)), 25);
-            b.FillColor = new Vector4i((int)Rand(0, 255), (int)Rand(0, 255), (int)Rand(0, 255), 255);
-            canvas.AddShape(j, b);
-            balls[j] = b;
-            canvas.OnDraw += (canvas.shapes[j++] as Ball).Update;
+            var p = new Particle(new Vector2(Rand(0, 800), Rand(0, 800)), 1);
+            p.FillColor = new Vector4i(0,255,0, 50);
+            p.StrokeWeight = 0;
+            canvas.AddShape(i, p);
+
+            var pRef = p;
+
+            canvas.OnDraw += () => pRef.Update(field);
         }
-        canvas.OnDraw += () => CheckBalls(balls, canvas);
         
         
         canvas.Run();

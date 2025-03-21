@@ -10,6 +10,10 @@ public static class Globals
     public static int StrokeWeight = 10; // Stroke weight in pixels
     public static Vector4i FillColor = new(255,255,255,255);
     public static Vector4i StrokeColor = new(0,0,0,255);
+    public static Vector4i BackgroundColor = new(0,0,0,50);
+    public static bool FrameSmearMode = false;
+    
+    public static Vector4 NormalizedBackgroundColor => new(BackgroundColor.X / 255f, BackgroundColor.Y / 255f, BackgroundColor.Z / 255f, BackgroundColor.W / 255f);
     public static Vector4 NormalizedFillColor => new(FillColor.X / 255f, FillColor.Y / 255f, FillColor.Z / 255f, FillColor.W / 255f);
     public static Vector4 NormalizedStrokeColor => new(StrokeColor.X / 255f, StrokeColor.Y / 255f, StrokeColor.Z / 255f, StrokeColor.W / 255f);
     public static Vector2i CanvasOffset = new(0,0); // used for changing the center point of the canvas
@@ -44,7 +48,12 @@ public static class Globals
     
     public static Vector4 NormalizeColor(Vector4 color) => new(color.X / 255f, color.Y / 255f, color.Z / 255f, color.W / 255f);
 
-    public static Vector2i CanvasCenter => new(CanvasSize.X / 2, CanvasSize.Y / 2);
-    
+    public static Vector2i CanvasCenter
+    {
+        get => new(CanvasSize.X / 2, CanvasSize.Y / 2);
+    }
+
     public static Random RND = new();
+    
+    
 }
