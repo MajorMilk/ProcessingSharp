@@ -56,6 +56,7 @@ public class Canvas : GameWindow
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
+        Globals.FrameCount++;
         base.OnRenderFrame(args);
         GL.Clear(ClearBufferMask.DepthBufferBit);
         if (!Globals.FrameSmearMode)

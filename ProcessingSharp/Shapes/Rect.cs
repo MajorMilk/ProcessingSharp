@@ -1,10 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-
 namespace P5CSLIB.Shapes;
-
-
-
 
 public class Rect : Shape
 {
@@ -94,7 +90,7 @@ public class Rect : Shape
 
     public override void Move(Vector2 displacement)
     {
-        var tmp = new Vector2(20 * displacement.X / Globals.CanvasSize.X, 20 * displacement.Y / Globals.CanvasSize.Y);
+        var tmp = new Vector2(5* displacement.X / Globals.CanvasSize.X, 5* displacement.Y / Globals.CanvasSize.Y);
         Position += tmp;
     }
 

@@ -5,6 +5,7 @@ namespace P5CSLIB;
 public static class Globals
 {
     public static float DeltaTime = 0;
+    public static long FrameCount = 0;
     public static bool Stroke = true;
     public static bool Fill = true;
     public static int StrokeWeight = 10; // Stroke weight in pixels

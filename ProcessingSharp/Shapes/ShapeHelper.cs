@@ -1,8 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-
 namespace P5CSLIB.Shapes;
 
+// This logic will eventually be replaced to allow custom shaders
 public static class ShaderHelper
 {
     public static int CreateShaderProgram()

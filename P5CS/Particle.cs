@@ -16,6 +16,6 @@ public class Particle : Circle
     
     public void Update(FlowField2D field)
     {
-        Move(field.Sample(Position) * 1000 * Globals.DeltaTime);
+        Move(field.Sample(Position) * 5000 * Globals.DeltaTime);
     }
 }

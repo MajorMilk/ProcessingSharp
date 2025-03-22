@@ -1,10 +1,8 @@
-﻿using OpenTK.Graphics.Vulkan;
-using OpenTK.Windowing.Desktop;
+﻿using OpenTK.Windowing.Desktop;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using P5CS;
 using P5CSLIB;
-using P5CSLIB.Shapes;
 using static P5CSLIB.PFuncs;
 class Program
 {
